@@ -8,7 +8,7 @@
     ./EFK.sh
     ```
 
-2. Visit your kibana dashboard and create `logstash-*` index pattern in Management->Stack Management->Index Patterns.
+2. Visit your kibana dashboard and create `fluentd-*` index pattern in Management->Stack Management->Index Patterns.
 
 3. Collect your log from your applicatiion. eg. for Node.js app you can use this [package](https://github.com/fluent/fluent-logger-node).
 

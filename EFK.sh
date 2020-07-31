@@ -65,6 +65,7 @@ cat <<EOT > /etc/td-agent/td-agent.conf
   @type http
   @id input_http
   port 8888
+  bind 0.0.0.0
 </source>
 
 <source>
@@ -82,6 +83,7 @@ cat <<EOT > /etc/td-agent/td-agent.conf
     include_tag_key true
     tag_key @log_name
     logstash_format true
+    logstash_prefix fluentd
     flush_interval 10s
   </store>
 </match>
