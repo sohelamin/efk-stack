@@ -12,9 +12,9 @@ sudo apt-get update
 sudo apt-get install default-jdk -y
 
 # Add elasticsearch package source
-wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg
 sudo apt-get install apt-transport-https -y
-echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list
+echo "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-8.x.list
 sudo apt-get update
 
 # Install elasticsearch
@@ -57,34 +57,30 @@ echo "admin:`openssl passwd -apr1 $kibanapassword`" | sudo tee -a /etc/nginx/htp
 sudo systemctl restart nginx
 
 # Install & configure fluentd
-curl -L https://toolbelt.treasuredata.com/sh/install-ubuntu-bionic-td-agent4.sh | sh
+curl -fsSL https://toolbelt.treasuredata.com/sh/install-ubuntu-focal-td-agent4.sh | sh
 
 cat <<EOC | sudo su
 cat <<EOT > /etc/td-agent/td-agent.conf
-<source>
-  @type http
-  @id input_http
-  port 8888
-  bind 0.0.0.0
-</source>
-
 <source>
   @type forward
   port 24224
   bind 0.0.0.0
 </source>
 
-<match *.**>
-  type copy
+<match api.log>
+  @type copy
   <store>
-    type elasticsearch
-    host localhost
+    @type elasticsearch
+    host elasticsearch
     port 9200
     include_tag_key true
     tag_key @log_name
     logstash_format true
-    logstash_prefix fluentd
+    logstash_prefix api.log
     flush_interval 10s
+    @log_level debug
+    user elastic
+    password mysecret
   </store>
 </match>
 EOT
