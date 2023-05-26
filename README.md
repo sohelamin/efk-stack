@@ -21,6 +21,11 @@ Use authentication while communicating through fluentd.
 
 ### Extra commands
 
+Reset elasticsearch user's password
+```
+bin/elasticsearch-reset-password -u elastic -i
+```
+
 Delete indices from Elasticsearch
 ```
 curl -XDELETE 'http://localhost:9200/logstash-*'
